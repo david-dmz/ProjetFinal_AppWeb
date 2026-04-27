@@ -5,6 +5,17 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>examen-final</title>
+    <script>
+  // scrpit permettant de détecter le thème préféré de l'utilisateur et d'appliquer la classe "dark" à la balise <html> en conséquence
+  if (
+    localStorage.getItem('flowbite-theme-mode') === 'dark' ||
+    (!('flowbite-theme-mode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
+  ) {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
+</script>
   </head>
   <body>
     <div id="root"></div>

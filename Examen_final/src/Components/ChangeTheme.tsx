@@ -1,5 +1,5 @@
 import { useThemeMode } from "flowbite-react";
-import './ChangeTheme.css'; // Ton fichier CSS séparé si tu utilises toujours @apply
+import './ChangeTheme.css'; 
 
 export const ChangeTheme = () => {
     const { mode, toggleMode } = useThemeMode();
