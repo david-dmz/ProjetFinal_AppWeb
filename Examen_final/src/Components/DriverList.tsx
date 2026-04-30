@@ -27,7 +27,7 @@ export const DriverList = () => {
   };
 
   if (loading) {
-    return <div>Chargement de la grille...</div>;
+    return <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700">Chargement de la grille...</div>;
   }
 
   return (
@@ -82,8 +82,17 @@ export const DriverList = () => {
               <img 
                 src={selectedDriver.headshot_url || 'https://placehold.co/300x300?text=No+Image'} 
                 alt={selectedDriver.full_name} 
-                className="modal-profile-img"
-                style={{ borderBottom: `8px solid #${selectedDriver.team_colour}` }}
+               style={{ 
+                  width: '200px', 
+                  height: '200px',
+                  objectFit: 'contain',
+                  borderRadius: '12px',
+                  backgroundColor: '#f9f9f9',
+                  borderBottom: `8px solid #${selectedDriver.team_colour}`,
+                  backgroundImage: `linear-gradient(to top, #${selectedDriver.team_colour}30, transparent)`,
+                  filter: 'drop-shadow(0 10px 10px rgba(0,0,0,0.2))',
+                  imageRendering: 'crisp-edges'
+                }}
               />
               
               <div className="modal-details">
@@ -91,6 +100,12 @@ export const DriverList = () => {
                 <p><strong>Numéro :</strong> {selectedDriver.driver_number}</p>
                 <p><strong>Écurie :</strong> {selectedDriver.team_name}</p>
                 <p><strong>Pays :</strong> {selectedDriver.country_code}</p>
+                <button 
+              className="btn-favoris"
+              onClick={(e) => { e.stopPropagation(); console.log("Ajout favori"); }}
+            >
+              Ajout Favoris
+            </button>
               </div>
             </div>
           </div>
