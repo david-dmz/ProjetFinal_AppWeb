@@ -10,6 +10,7 @@ export interface Driver {
 }
 
 // 2.Interface pour les écuries (teams)
+// TODO: Ajouter les images des écuries si possible.
 export interface Team {
   team_name: string;
   team_colour: string;
