@@ -34,7 +34,7 @@ export const driverWDC: Record<number, number> = {
   1: 4,  // Max Verstappen (4 titres)
   2: 0,  // Logan Sargeant
   3: 0,  // Daniel Ricciardo
-  4: 0,  // Lando Norris
+  4: 1,  // Lando Norris (1 titre)
   5: 0,  // Gabriel Bortoleto
   7: 0,  // Jack Doohan
   10: 0, // Pierre Gasly

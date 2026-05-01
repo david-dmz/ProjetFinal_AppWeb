@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { fetchDrivers, type Driver } from "../API/openF1";
 import "./DriverList.css";
-import { customImages, driverWDC } from "./DriversInfo";
+import { customImages, driverWDC } from "../API/DriversInfo";
 
 export const DriverList = () => {
   const [drivers, setDrivers] = useState<Driver[]>([]);
