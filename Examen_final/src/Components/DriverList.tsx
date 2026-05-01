@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { fetchDrivers, type Driver } from "../API/openF1";
 import "./DriverList.css";
-import {customImages} from './DriverImages';
-
+import { customImages, driverWDC } from "./DriversInfo";
 
 export const DriverList = () => {
   const [drivers, setDrivers] = useState<Driver[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [loading, setLoading] = useState(true);
+  
   const [selectedDriver, setSelectedDriver] = useState<Driver | null>(null);
 
   // TODO : debug car localStorage ne se met pas à jour correctement
@@ -97,7 +97,8 @@ export const DriverList = () => {
               <div className="card-content">
                 <img
                   className="card-image"
-                  src={customImages[driver.driver_number] ||
+                  src={
+                    customImages[driver.driver_number] ||
                     driver.headshot_url ||
                     "https://placehold.co/200x200?text=No+Image"
                   }
@@ -142,7 +143,8 @@ export const DriverList = () => {
                 }}
               >
                 <img
-                  src={customImages[selectedDriver.driver_number] ||
+                  src={
+                    customImages[selectedDriver.driver_number] ||
                     selectedDriver.headshot_url ||
                     "https://placehold.co/300x300?text=No+Image"
                   }
@@ -163,6 +165,12 @@ export const DriverList = () => {
                   <strong className="modal-detail-label">Numéro</strong>
                   <span className="modal-detail-value-blue">
                     #{selectedDriver.driver_number}
+                  </span>
+                </p>
+                <p className="modal-detail-row">
+                  <strong className="modal-detail-label">Championnats gagnés (WDC)</strong> 
+                  <span className="modal-detail-value font-black text-yellow-500">
+                    {driverWDC[selectedDriver.driver_number] ? `${driverWDC[selectedDriver.driver_number]}` : "0"}
                   </span>
                 </p>
                 <p className="modal-detail-row">
