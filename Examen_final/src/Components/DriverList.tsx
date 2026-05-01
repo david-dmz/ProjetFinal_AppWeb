@@ -142,7 +142,7 @@ export const DriverList = () => {
               <div className="card-content">
                 <img
                   className="card-image"
-                  src={
+                  src={customImages[driver.driver_number] ||
                     driver.headshot_url ||
                     "https://placehold.co/200x200?text=No+Image"
                   }
@@ -187,7 +187,7 @@ export const DriverList = () => {
                 }}
               >
                 <img
-                  src={
+                  src={customImages[selectedDriver.driver_number] ||
                     selectedDriver.headshot_url ||
                     "https://placehold.co/300x300?text=No+Image"
                   }
