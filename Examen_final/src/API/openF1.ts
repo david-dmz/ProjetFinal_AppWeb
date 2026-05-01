@@ -9,22 +9,45 @@ export interface Driver {
   country_code: string;
 }
 
-// 2.Interface pour les écuries (teams)
+// 2. Interface pour les écuries (teams)
 // TODO: Ajouter les images des écuries si possible.
 export interface Team {
   team_name: string;
   team_colour: string;
 }
 
-// 3. Fonction pour récupérer les pilotes depuis l'API OpenF1
-export const fetchDrivers = async (): Promise<Driver[]> => {
+// 3. Interface pour les courses (Meetings)
+export interface Meeting {
+  meeting_key: number;
+  meeting_name: string;
+  country_name: string;
+}
+
+// 4. NOUVEAU : Fonction pour récupérer les courses d'une année
+export const fetchMeetings = async (year: string): Promise<Meeting[]> => {
   try {
-    const response = await fetch('https://api.openf1.org/v1/drivers?session_key=latest');
+    const response = await fetch(`https://api.openf1.org/v1/meetings?year=${year}`);
     if (!response.ok) {
-      throw new Error('Erreur lors de la récupération des données');
+      throw new Error('Erreur lors de la récupération des courses');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
+export const fetchDrivers = async (meetingKey: number): Promise<Driver[]> => {
+  try {
+
+    const response = await fetch(`https://api.openf1.org/v1/drivers?meeting_key=${meetingKey}`);
+    
+    if (!response.ok) {
+      throw new Error('Erreur lors de la récupération des données des pilotes');
     }
     const data: Driver[] = await response.json();
     
+    // Retirer les doublons
     const uniqueDrivers = data.reduce((acc: Driver[], current) => {
       const x = acc.find(item => item.driver_number === current.driver_number);
       if (!x) {
@@ -41,7 +64,7 @@ export const fetchDrivers = async (): Promise<Driver[]> => {
   }
 };
 
-// 4. Fonction pour extraire les écuries uniques à partir des pilotes
+// 6. Extraire les écuries uniques à partir des pilotes
 export const extractUniqueTeams = (drivers: Driver[]): Team[] => {
   const teamsMap = new Map<string, string>();
 
@@ -53,7 +76,7 @@ export const extractUniqueTeams = (drivers: Driver[]): Team[] => {
     }
   });
 
-  // On transforme notre Map en un beau tableau d'objets respectant l'interface Team
+  // On transforme notre Map en un tableau
   return Array.from(teamsMap, ([team_name, team_colour]) => ({
     team_name,
     team_colour

@@ -3,5 +3,5 @@
   @apply min-h-screen bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-white transition-colors duration-300 p-8;
 }
 .dashboard-title {
-  @apply text-3xl font-bold mb-6;
+  @apply text-3xl font-bold mb-6 text-center;
 }
