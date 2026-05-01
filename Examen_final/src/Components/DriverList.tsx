@@ -2,6 +2,53 @@ import { useState, useEffect } from "react";
 import { fetchDrivers, type Driver } from "../API/openF1";
 import "./DriverList.css";
 
+// --- DICTIONNAIRE D'IMAGES HAUTE DÉFINITION (Grille F1) ---
+const customImages: Record<number, string> = {
+  // Red Bull Racing
+  1: "https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/M/MAXVER01_Max_Verstappen/maxver01.png",
+  11: "https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/S/SERPER01_Sergio_Perez/serper01.png",
+
+  // Ferrari
+  16: "https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/C/CHALEC01_Charles_Leclerc/chalec01.png",
+  55: "https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/C/CARSAI01_Carlos_Sainz/carsai01.png",
+
+  // Mercedes
+  44: "https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/L/LEWHAM01_Lewis_Hamilton/lewham01.png",
+  63: "https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/G/GEORUS01_George_Russell/georus01.png",
+
+  // McLaren
+  4: "https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/L/LANNOR01_Lando_Norris/lannor01.png",
+  81: "https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/O/OSCPIA01_Oscar_Piastri/oscpia01.png",
+
+  // Aston Martin
+  14: "https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/F/FERALO01_Fernando_Alonso/feralo01.png",
+  18: "https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/L/LANSTR01_Lance_Stroll/lanstr01.png",
+
+  // Alpine
+  10: "https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/P/PIEGAS01_Pierre_Gasly/piegas01.png",
+  31: "https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/E/ESTOCO01_Esteban_Ocon/estoco01.png",
+
+  // Williams
+  23: "https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/A/ALEALB01_Alexander_Albon/alealb01.png",
+  2: "https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/L/LOGSAR01_Logan_Sargeant/logsar01.png",
+
+  // Visa Cash App RB (AlphaTauri)
+  22: "https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/Y/YUKTSU01_Yuki_Tsunoda/yuktsu01.png",
+  3: "https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/D/DANRIC01_Daniel_Ricciardo/danric01.png",
+
+  // Kick Sauber (Alfa Romeo)
+  77: "https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/V/VALBOT01_Valtteri_Bottas/valbot01.png",
+  24: "https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/Z/ZHOGUA01_Guanyu_Zhou/zhogua01.png",
+
+  // Haas
+  20: "https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/K/KEVMAG01_Kevin_Magnussen/kevmag01.png",
+  27: "https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/N/NICHUL01_Nico_Hulkenberg/nichul01.png",
+
+  // Pilotes de réserve récents (au cas où l'API les renvoie)
+  38: "https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/O/OLIbea01_Oliver_Bearman/olibea01.png", // Oliver Bearman
+  40: "https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/L/LIALAW01_Liam_Lawson/lialaw01.png", // Liam Lawson
+};
+
 export const DriverList = () => {
   const [drivers, setDrivers] = useState<Driver[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -64,9 +111,7 @@ export const DriverList = () => {
   return (
     <div className="page-container">
       <div className="header-section">
-        <h2 className="title-main">
-          Grille des Pilotes
-        </h2>
+        <h2 className="title-main">Grille des Pilotes</h2>
 
         <input
           type="text"
@@ -77,31 +122,42 @@ export const DriverList = () => {
         />
       </div>
 
-   <ul className="drivers-grid">
+      <ul className="drivers-grid">
         {filteredDrivers.map((driver) => {
-          const isFav = favorites.some(fav => fav.driver_number === driver.driver_number);
+          const isFav = favorites.some(
+            (fav) => fav.driver_number === driver.driver_number,
+          );
 
           return (
-            <li 
+            <li
               key={driver.driver_number}
               onClick={() => setSelectedDriver(driver)}
               className="driver-card"
             >
-              <div className="card-color-bar" style={{ backgroundColor: `#${driver.team_colour}` }}></div>
-              
+              <div
+                className="card-color-bar"
+                style={{ backgroundColor: `#${driver.team_colour}` }}
+              ></div>
+
               <div className="card-content">
-                <img 
-                  className="card-image" 
-                  src={driver.headshot_url || 'https://placehold.co/200x200?text=No+Image'} 
-                  alt={driver.full_name} 
+                <img
+                  className="card-image"
+                  src={
+                    driver.headshot_url ||
+                    "https://placehold.co/200x200?text=No+Image"
+                  }
+                  alt={driver.full_name}
                 />
                 <h5 className="card-name">{driver.full_name}</h5>
                 <span className="card-number">#{driver.driver_number}</span>
                 <span className="card-team">{driver.team_name}</span>
-                
-                <button 
-                  onClick={(e) => { e.stopPropagation(); toggleFavorite(driver); }}
-                  className={`btn-favorite ${isFav ? 'btn-favorite-remove' : 'btn-favorite-add'}`}
+
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleFavorite(driver);
+                  }}
+                  className={`btn-favorite ${isFav ? "btn-favorite-remove" : "btn-favorite-add"}`}
                 >
                   {isFav ? "Retirer des Favoris" : " Ajouter aux Favoris"}
                 </button>
@@ -112,62 +168,80 @@ export const DriverList = () => {
       </ul>
 
       {/* --- LA MODALE --- */}
-     {selectedDriver && (
+      {selectedDriver && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-container" onClick={(e) => e.stopPropagation()}>
-            
-            <button className="modal-close-btn" onClick={closeModal}>✕</button>
-            
-            <div className="modal-header">
-              {selectedDriver.full_name}
-            </div>
-            
+            <button className="modal-close-btn" onClick={closeModal}>
+              ✕
+            </button>
+
+            <div className="modal-header">{selectedDriver.full_name}</div>
+
             <div className="modal-body">
               {/* Conteneur de l'image */}
-              <div 
+              <div
                 className="modal-image-container"
-               style={{ 
+                style={{
                   borderBottom: `8px solid #${selectedDriver.team_colour}`,
-                  backgroundImage: `linear-gradient(to top, #${selectedDriver.team_colour}30, transparent)`
+                  backgroundImage: `linear-gradient(to top, #${selectedDriver.team_colour}30, transparent)`,
                 }}
               >
-                <img 
-                  src={selectedDriver.headshot_url || 'https://placehold.co/300x300?text=No+Image'} 
-                  alt={selectedDriver.full_name} 
+                <img
+                  src={
+                    selectedDriver.headshot_url ||
+                    "https://placehold.co/300x300?text=No+Image"
+                  }
+                  alt={selectedDriver.full_name}
                   className="modal-image"
                 />
               </div>
-              
+
               {/* Informations du pilote */}
               <div className="modal-details-container">
                 <p className="modal-detail-row">
-                  <strong className="modal-detail-label">Acronyme</strong> 
-                  <span className="modal-detail-value">{selectedDriver.name_acronym}</span>
+                  <strong className="modal-detail-label">Acronyme</strong>
+                  <span className="modal-detail-value">
+                    {selectedDriver.name_acronym}
+                  </span>
                 </p>
                 <p className="modal-detail-row">
-                  <strong className="modal-detail-label">Numéro</strong> 
-                  <span className="modal-detail-value-blue">#{selectedDriver.driver_number}</span>
+                  <strong className="modal-detail-label">Numéro</strong>
+                  <span className="modal-detail-value-blue">
+                    #{selectedDriver.driver_number}
+                  </span>
                 </p>
                 <p className="modal-detail-row">
-                  <strong className="modal-detail-label">Écurie</strong> 
-                  <span className="modal-detail-value">{selectedDriver.team_name}</span>
+                  <strong className="modal-detail-label">Écurie</strong>
+                  <span className="modal-detail-value">
+                    {selectedDriver.team_name}
+                  </span>
                 </p>
                 <p className="modal-detail-row-last">
-                  <strong className="modal-detail-label">Pays</strong> 
-                  <span className="modal-detail-value">{selectedDriver.country_code}</span>
+                  <strong className="modal-detail-label">Pays</strong>
+                  <span className="modal-detail-value">
+                    {selectedDriver.country_code}
+                  </span>
                 </p>
-                
+
                 {/* Bouton Favoris à l'intérieur de la modale */}
-                <button 
-                  onClick={(e) => { e.stopPropagation(); toggleFavorite(selectedDriver); }}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleFavorite(selectedDriver);
+                  }}
                   className={`modal-btn-favorite ${
-                    favorites.some(fav => fav.driver_number === selectedDriver.driver_number) 
-                      ? 'btn-favorite-remove' 
-                      : 'btn-favorite-add'
+                    favorites.some(
+                      (fav) =>
+                        fav.driver_number === selectedDriver.driver_number,
+                    )
+                      ? "btn-favorite-remove"
+                      : "btn-favorite-add"
                   }`}
                 >
-                  {favorites.some(fav => fav.driver_number === selectedDriver.driver_number) 
-                    ? "❌ " 
+                  {favorites.some(
+                    (fav) => fav.driver_number === selectedDriver.driver_number,
+                  )
+                    ? "❌ "
                     : "⭐"}
                 </button>
               </div>
