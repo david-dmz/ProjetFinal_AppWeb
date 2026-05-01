@@ -1,17 +1,18 @@
 import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { ChangeTheme } from "./Components/ChangeTheme";
-import { ThemeProvider } from "flowbite-react";
+import {ThemeProvider } from "flowbite-react";
 import "./App.css";
 import { DriverList } from "./Components/DriverList";
 import { Favorites } from "./Components/Favorites";
-
+import { Footer } from "./Components/Footer";
 export default function App() {
   return (
-    <ThemeProvider>
+    <>
+      <ThemeProvider>
       <Router>
         <div className="app-container">
-          <h1 className="dashboard-title">Tableau de bord</h1>
+          <h1 className="dashboard-title">F1 PADDOCK</h1>
 
           <nav>
             <ul>
@@ -33,9 +34,13 @@ export default function App() {
               <Route path="/" element={<DriverList />} />
               <Route path="/favoris" element={<Favorites />} />
             </Routes>
+            <Footer />
           </main>
+          
         </div>
       </Router>
     </ThemeProvider>
+    </>
+  
   );
 }
