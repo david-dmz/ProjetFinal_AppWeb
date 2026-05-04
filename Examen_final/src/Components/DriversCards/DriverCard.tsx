@@ -18,7 +18,7 @@ export const DriverCard = ({ driver, isFav, onSelect, onToggleFavorite }: Driver
     <div className="card-content">
       <img
         className="card-image"
-        src={customImages[driver.driver_number] || driver.headshot_url || "https://placehold.co/200x200?text=No+Image"}
+        src={ driver.headshot_url || "https://placehold.co/200x200?text=No+Image"}
         alt={driver.full_name}
       />
       <h5 className="card-name flex items-center justify-center gap-2">

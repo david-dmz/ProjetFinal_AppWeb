@@ -1,4 +1,7 @@
-// 1. Interface pour les pilotes
+const BASE_URL = "https://api.openf1.org/v1";
+
+// --- INTERFACES ---
+
 export interface Driver {
   driver_number: number;
   full_name: string;
@@ -9,27 +12,49 @@ export interface Driver {
   country_code: string;
 }
 
-// 2. Interface pour les écuries (teams)
-// TODO: Ajouter les images des écuries si possible.
 export interface Team {
   team_name: string;
   team_colour: string;
 }
 
-// 3. Interface pour les courses (Meetings)
 export interface Meeting {
   meeting_key: number;
   meeting_name: string;
   country_name: string;
 }
 
-// 4. NOUVEAU : Fonction pour récupérer les courses d'une année
+// --- UTILITAIRES ---
+
+/**
+ * Améliore la qualité de l'image headshot fournie par OpenF1.
+ * L'URL originale contient "1col" (basse qualité) → on remplace par "5col".
+ * Exemple : ".../1col.png" → ".../5col.png"
+ */
+const getHighQualityHeadshot = (url: string): string => {
+  if (!url) return "";
+  return url.replace("1col", "5col");
+};
+
+/**
+ * Supprime les pilotes en double dans une liste,
+ * en gardant la première occurrence de chaque numéro.
+ */
+const removeDuplicateDrivers = (drivers: Driver[]): Driver[] => {
+  const seen = new Set<number>();
+  return drivers.filter((driver) => {
+    if (seen.has(driver.driver_number)) return false;
+    seen.add(driver.driver_number);
+    return true;
+  });
+};
+
+// --- FONCTIONS API ---
+
+/** Récupère toutes les courses (meetings) d'une année donnée. */
 export const fetchMeetings = async (year: string): Promise<Meeting[]> => {
   try {
-    const response = await fetch(`https://api.openf1.org/v1/meetings?year=${year}`);
-    if (!response.ok) {
-      throw new Error('Erreur lors de la récupération des courses');
-    }
+    const response = await fetch(`${BASE_URL}/meetings?year=${year}`);
+    if (!response.ok) throw new Error("Erreur fetchMeetings");
     return await response.json();
   } catch (error) {
     console.error(error);
@@ -37,48 +62,39 @@ export const fetchMeetings = async (year: string): Promise<Meeting[]> => {
   }
 };
 
+/** Récupère les pilotes d'une course (meeting_key), sans doublons et en haute qualité. */
 export const fetchDrivers = async (meetingKey: number): Promise<Driver[]> => {
   try {
+    const response = await fetch(`${BASE_URL}/drivers?meeting_key=${meetingKey}`);
+    if (!response.ok) throw new Error("Erreur fetchDrivers");
 
-    const response = await fetch(`https://api.openf1.org/v1/drivers?meeting_key=${meetingKey}`);
-    
-    if (!response.ok) {
-      throw new Error('Erreur lors de la récupération des données des pilotes');
-    }
     const data: Driver[] = await response.json();
-    
-    // Retirer les doublons
-    const uniqueDrivers = data.reduce((acc: Driver[], current) => {
-      const x = acc.find(item => item.driver_number === current.driver_number);
-      if (!x) {
-        return acc.concat([current]);
-      } else {
-        return acc;
-      }
-    }, []);
 
-    return uniqueDrivers;
+    const unique = removeDuplicateDrivers(data);
+
+    // Améliore la qualité de chaque headshot
+    return unique.map((driver) => ({
+      ...driver,
+      headshot_url: getHighQualityHeadshot(driver.headshot_url),
+    }));
   } catch (error) {
     console.error(error);
     return [];
   }
 };
 
-// 6. Extraire les écuries uniques à partir des pilotes
+/** Extrait la liste des écuries uniques à partir d'une liste de pilotes. */
 export const extractUniqueTeams = (drivers: Driver[]): Team[] => {
   const teamsMap = new Map<string, string>();
 
-  // On parcourt tous les pilotes et on enregistre l'écurie si elle n'est pas déjà dans notre Map
-  drivers.forEach(driver => {
-    // On s'assure que le pilote a bien une écurie assignée pour éviter les erreurs
-    if (driver.team_name && !teamsMap.has(driver.team_name)) {
-      teamsMap.set(driver.team_name, driver.team_colour);
+  drivers.forEach(({ team_name, team_colour }) => {
+    if (team_name && !teamsMap.has(team_name)) {
+      teamsMap.set(team_name, team_colour);
     }
   });
 
-  // On transforme notre Map en un tableau
   return Array.from(teamsMap, ([team_name, team_colour]) => ({
     team_name,
-    team_colour
+    team_colour,
   }));
 };

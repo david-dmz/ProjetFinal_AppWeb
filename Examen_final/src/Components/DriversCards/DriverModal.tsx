@@ -27,7 +27,7 @@ export const DriverModal = ({ driver, isFav, onClose, onToggleFavorite }: Driver
             }}
           >
             <img
-              src={customImages[driver.driver_number] || driver.headshot_url || "https://placehold.co/300x300?text=No+Image"}
+              src={ driver.headshot_url || "https://placehold.co/300x300?text=No+Image"}
               alt={driver.full_name}
               className="modal-image"
             />
