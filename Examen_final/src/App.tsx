@@ -4,7 +4,7 @@ import { ChangeTheme } from "./Components/ChangeTheme";
 import {ThemeProvider } from "flowbite-react";
 import "./App.css";
 import { DriverList } from "./Components/DriversCards/DriverList";
-import { Favorites } from "./Components/Favorites";
+import { Favorites } from "./Components/Favorite/Favorites";
 import { Footer } from "./Components/Footer/Footer";
 export default function App() {
   return (

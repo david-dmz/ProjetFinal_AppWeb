@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { type Driver } from "../API/openF1";
+import { type Driver } from "../../API/openF1";
 import "./Favorites.css";
 
 export const Favorites = () => {
