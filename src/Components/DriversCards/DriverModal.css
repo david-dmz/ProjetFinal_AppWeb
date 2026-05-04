@@ -1,0 +1,57 @@
+/* DriverModal.css */
+
+.modal-overlay {
+  @apply fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4;
+}
+
+.modal-container {
+  @apply relative bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-md overflow-hidden;
+}
+
+.modal-close-btn {
+  @apply absolute top-4 right-4 z-10 text-gray-400 hover:text-gray-700 dark:hover:text-white text-xl font-bold bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full w-9 h-9 flex items-center justify-center transition-all duration-200;
+}
+
+.modal-header {
+  @apply text-xl font-extrabold text-center text-gray-900 dark:text-white px-6 pt-6 pb-2 tracking-tight;
+}
+
+.modal-body {
+  @apply flex flex-col;
+}
+
+.modal-image-container {
+  @apply flex justify-center items-end bg-gradient-to-t from-gray-100 dark:from-gray-700 to-transparent px-6 pt-4 pb-0 min-h-48;
+}
+
+.modal-image {
+  @apply w-44 h-44 object-cover drop-shadow-xl;
+}
+
+.modal-details-container {
+  @apply flex flex-col gap-0 px-6 py-4;
+}
+
+.modal-detail-row {
+  @apply flex justify-between items-center py-3 border-b border-gray-100 dark:border-gray-700;
+}
+
+.modal-detail-row-last {
+  @apply flex justify-between items-center py-3;
+}
+
+.modal-detail-label {
+  @apply text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider;
+}
+
+.modal-detail-value {
+  @apply text-sm font-bold text-gray-900 dark:text-white;
+}
+
+.modal-detail-value-blue {
+  @apply text-sm font-extrabold text-blue-600 dark:text-blue-400;
+}
+
+.modal-btn-favorite {
+  @apply mt-4 w-full py-3 rounded-xl text-sm font-bold transition-all duration-200 border;
+}
