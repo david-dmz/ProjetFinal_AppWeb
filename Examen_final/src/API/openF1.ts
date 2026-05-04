@@ -25,20 +25,13 @@ export interface Meeting {
 
 // --- UTILITAIRES ---
 
-/**
- * Améliore la qualité de l'image headshot fournie par OpenF1.
- * L'URL originale contient "1col" (basse qualité) → on remplace par "5col".
- * Exemple : ".../1col.png" → ".../5col.png"
- */
+//Améliore la qualité de l'image headshot fournie par OpenF1.
 const getHighQualityHeadshot = (url: string): string => {
   if (!url) return "";
   return url.replace("1col", "5col");
 };
 
-/**
- * Supprime les pilotes en double dans une liste,
- * en gardant la première occurrence de chaque numéro.
- */
+
 const removeDuplicateDrivers = (drivers: Driver[]): Driver[] => {
   const seen = new Set<number>();
   return drivers.filter((driver) => {

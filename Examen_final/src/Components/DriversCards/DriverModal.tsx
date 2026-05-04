@@ -1,5 +1,5 @@
 import { type Driver } from "../../API/openF1";
-import { customImages, driverWDC } from "../../API/DriversInfo";
+import {  driverWDC } from "../../API/DriversInfo";
 import "./DriverModal.css";
 
 interface DriverModalProps {
