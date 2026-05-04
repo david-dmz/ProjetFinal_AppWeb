@@ -3,9 +3,12 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { ChangeTheme } from "./Components/ChangeTheme";
 import {ThemeProvider } from "flowbite-react";
 import "./App.css";
+
+import { HomePage } from "./Components/HomePage/HomePage";
 import { DriverList } from "./Components/DriversCards/DriverList";
 import { Favorites } from "./Components/Favorite/Favorites";
 import { Footer } from "./Components/Footer/Footer";
+
 export default function App() {
   return (
     <>
@@ -17,7 +20,12 @@ export default function App() {
           <nav>
             <ul>
               <li>
-                <Link to="/" style={{ color: "white" }}>
+                <Link to ="/" style={{ color: "white" }}>
+                Accueil
+                </Link>
+              </li>
+              <li>
+                <Link to="/pilotes" style={{ color: "white" }}>
                   Pilotes
                 </Link>
               </li>
@@ -29,9 +37,11 @@ export default function App() {
             </ul>
           </nav>
           <ChangeTheme />
+
           <main>
             <Routes>
-              <Route path="/" element={<DriverList />} />
+              <Route path="/" element={<HomePage />} />
+              <Route path="/pilotes" element={<DriverList />} />
               <Route path="/favoris" element={<Favorites  />} />
             </Routes>
             <Footer />
