@@ -1,5 +1,5 @@
-import { type Driver } from "../../API/openF1";
-import {  driverWDC } from "../../API/DriversInfo";
+import { type Driver, formatLapTime } from "../../API/openF1";
+import { driverWDC } from "../../API/DriversInfo";
 import "./DriverModal.css";
 
 interface DriverModalProps {
@@ -9,13 +9,20 @@ interface DriverModalProps {
   onToggleFavorite: (driver: Driver) => void;
 }
 
-export const DriverModal = ({ driver, isFav, onClose, onToggleFavorite }: DriverModalProps) => {
+export const DriverModal = ({
+  driver,
+  isFav,
+  onClose,
+  onToggleFavorite,
+}: DriverModalProps) => {
   if (!driver) return null;
 
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-container" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close-btn" onClick={onClose}>✕</button>
+        <button className="modal-close-btn" onClick={onClose}>
+          ✕
+        </button>
         <div className="modal-header">{driver.full_name}</div>
 
         <div className="modal-body">
@@ -27,7 +34,10 @@ export const DriverModal = ({ driver, isFav, onClose, onToggleFavorite }: Driver
             }}
           >
             <img
-              src={ driver.headshot_url || "https://placehold.co/300x300?text=No+Image"}
+              src={
+                driver.headshot_url ||
+                "https://placehold.co/300x300?text=No+Image"
+              }
               alt={driver.full_name}
               className="modal-image"
             />
@@ -40,7 +50,15 @@ export const DriverModal = ({ driver, isFav, onClose, onToggleFavorite }: Driver
             </p>
             <p className="modal-detail-row">
               <strong className="modal-detail-label">Numéro</strong>
-              <span className="modal-detail-value-blue">#{driver.driver_number}</span>
+              <span className="modal-detail-value-blue">
+                #{driver.driver_number}
+              </span>
+            </p>
+            <p className="modal-detail-row">
+              <strong className="modal-detail-label"> Meilleur Tour (Session)</strong>
+              <span className="modal-detail-value">
+               {formatLapTime(driver.best_lap_time)}
+              </span>
             </p>
             <p className="modal-detail-row">
               <strong className="modal-detail-label">Championnats (WDC)</strong>
@@ -54,7 +72,10 @@ export const DriverModal = ({ driver, isFav, onClose, onToggleFavorite }: Driver
             </p>
 
             <button
-              onClick={(e) => { e.stopPropagation(); onToggleFavorite(driver); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleFavorite(driver);
+              }}
               className={`modal-btn-favorite ${isFav ? "btn-favorite-remove" : "btn-favorite-add"}`}
             >
               {isFav ? "❌" : "⭐"}

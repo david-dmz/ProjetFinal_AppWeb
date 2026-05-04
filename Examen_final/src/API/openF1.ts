@@ -10,6 +10,8 @@ export interface Driver {
   team_colour: string;
   headshot_url: string;
   country_code: string;
+  session_key: number;
+  best_lap_time?: number;
 }
 
 export interface Team {
@@ -23,6 +25,12 @@ export interface Meeting {
   country_name: string;
 }
 
+export interface Lap {
+  driver_number: number;
+  lap_duration: number;
+  is_pit_out_lap: boolean;
+}
+
 // --- UTILITAIRES ---
 
 //Améliore la qualité de l'image headshot fournie par OpenF1.
@@ -31,7 +39,7 @@ const getHighQualityHeadshot = (url: string): string => {
   return url.replace("1col", "5col");
 };
 
-
+// sert comme un filtre pour éviter les doublons de pilotes dans une même course (bug de l'API)
 const removeDuplicateDrivers = (drivers: Driver[]): Driver[] => {
   const seen = new Set<number>();
   return drivers.filter((driver) => {
@@ -39,6 +47,14 @@ const removeDuplicateDrivers = (drivers: Driver[]): Driver[] => {
     seen.add(driver.driver_number);
     return true;
   });
+};
+
+/** Formatage du temps : 84.123 -> "1:24.123" */
+export const formatLapTime = (seconds: number | undefined): string => {
+  if (!seconds || isNaN(seconds)) return "--:--.---";
+  const mins = Math.floor(seconds / 60);
+  const secs = (seconds % 60).toFixed(3);
+  return `${mins}:${secs.padStart(6, "0")}`;
 };
 
 // --- FONCTIONS API ---
@@ -58,25 +74,49 @@ export const fetchMeetings = async (year: string): Promise<Meeting[]> => {
 /** Récupère les pilotes d'une course (meeting_key), sans doublons et en haute qualité. */
 export const fetchDrivers = async (meetingKey: number): Promise<Driver[]> => {
   try {
-    const response = await fetch(`${BASE_URL}/drivers?meeting_key=${meetingKey}`);
-    if (!response.ok) throw new Error("Erreur fetchDrivers");
+    // 1. Récupérer les pilotes
+    const driverRes = await fetch(`${BASE_URL}/drivers?meeting_key=${meetingKey}`);
+    if (!driverRes.ok) throw new Error("Erreur lors de la récupération des pilotes");
+    
+    const rawDrivers: Driver[] = await driverRes.json();
+    const uniqueDrivers = removeDuplicateDrivers(rawDrivers);
 
-    const data: Driver[] = await response.json();
+    if (uniqueDrivers.length === 0) return [];
 
-    const unique = removeDuplicateDrivers(data);
+    // On récupère la session_key du premier pilote pour chercher les laps de cette course
+    const sessionKey = uniqueDrivers[0].session_key;
 
-    // Améliore la qualité de chaque headshot
-    return unique.map((driver) => ({
+    // 2. Récupérer tous les tours de la session
+    const lapRes = await fetch(`${BASE_URL}/laps?session_key=${sessionKey}`);
+    let bestLapsMap: Record<number, number> = {};
+
+    if (lapRes.ok) {
+      const allLaps: Lap[] = await lapRes.json();
+      
+      // On calcule le meilleur tour pour chaque pilote
+      allLaps.forEach((lap) => {
+        if (lap.lap_duration && !lap.is_pit_out_lap) {
+          if (!bestLapsMap[lap.driver_number] || lap.lap_duration < bestLapsMap[lap.driver_number]) {
+            bestLapsMap[lap.driver_number] = lap.lap_duration;
+          }
+        }
+      });
+    }
+
+    // 3. Fusionner les données
+    return uniqueDrivers.map((driver) => ({
       ...driver,
       headshot_url: getHighQualityHeadshot(driver.headshot_url),
+      best_lap_time: bestLapsMap[driver.driver_number] || undefined,
     }));
+
   } catch (error) {
-    console.error(error);
+    console.error("Erreur fetchDrivers enriched:", error);
     return [];
   }
 };
 
-/** Extrait la liste des écuries uniques à partir d'une liste de pilotes. */
+/** Extrait la liste des écuries uniques. */
 export const extractUniqueTeams = (drivers: Driver[]): Team[] => {
   const teamsMap = new Map<string, string>();
 

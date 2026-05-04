@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { type Driver } from "../../API/openF1";
+import { DriverModal } from "../DriversCards/DriverModal"; 
 import "./Favorites.css";
 
 export const Favorites = () => {
   const [favorites, setFavorites] = useState<Driver[]>([]);
+  const [selectedDriver, setSelectedDriver] = useState<Driver | null>(null);
 
   useEffect(() => {
     const saved = localStorage.getItem("f1_favorites");
@@ -16,11 +18,15 @@ export const Favorites = () => {
     const updatedFavorites = favorites.filter((fav) => fav.driver_number !== driverNumber);
     setFavorites(updatedFavorites);
     localStorage.setItem("f1_favorites", JSON.stringify(updatedFavorites));
+    
+    // Fermer la modale si on supprime le pilote actuellement affiché
+    if (selectedDriver?.driver_number === driverNumber) {
+      setSelectedDriver(null);
+    }
   };
 
   return (
     <div className="favorites-container">
-      
       <div className="header-section">
         <h2 className="title-main">
           Mon Écurie <span className="title-highlight">(Favoris)</span>
@@ -37,9 +43,12 @@ export const Favorites = () => {
       ) : (
         <ul className="driver-grid">
           {favorites.map((driver) => (
-            
-            <li key={driver.driver_number} className="driver-card">
-              {/* Le style en ligne (inline) est toujours nécessaire ici car la couleur vient de l'API */}
+            <li 
+              key={driver.driver_number} 
+              className="driver-card"
+              onClick={() => setSelectedDriver(driver)} 
+              style={{ cursor: 'pointer' }}
+            >
               <div className="h-3 w-full" style={{ backgroundColor: `#${driver.team_colour}` }}></div>
               
               <div className="driver-info-container">
@@ -54,22 +63,29 @@ export const Favorites = () => {
                 
                 <div className="mt-auto w-full">
                   <button 
-                    onClick={() => removeFavorite(driver.driver_number)}
+                    onClick={(e) => {
+                      e.stopPropagation(); 
+                      removeFavorite(driver.driver_number);
+                    }}
                     type="button"
                     className="btn-remove"
                   >
-                    <svg className="w-4 h-4 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
                     Retirer
                   </button>
                 </div>
-                
               </div>
             </li>
           ))}
         </ul>
       )}
+
+      {/* 4. Affichage conditionnel de la modale */}
+      <DriverModal
+        driver={selectedDriver}
+        isFav={true} 
+        onClose={() => setSelectedDriver(null)}
+        onToggleFavorite={(d) => removeFavorite(d.driver_number)}
+      />
     </div>
   );
 };
