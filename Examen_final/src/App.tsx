@@ -3,9 +3,9 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { ChangeTheme } from "./Components/ChangeTheme";
 import {ThemeProvider } from "flowbite-react";
 import "./App.css";
-import { DriverList } from "./Components/DriverList";
+import { DriverList } from "./Components/DriversCards/DriverList";
 import { Favorites } from "./Components/Favorites";
-import { Footer } from "./Components/Footer";
+import { Footer } from "./Components/Footer/Footer";
 export default function App() {
   return (
     <>
@@ -32,7 +32,7 @@ export default function App() {
           <main>
             <Routes>
               <Route path="/" element={<DriverList />} />
-              <Route path="/favoris" element={<Favorites />} />
+              <Route path="/favoris" element={<Favorites  />} />
             </Routes>
             <Footer />
           </main>

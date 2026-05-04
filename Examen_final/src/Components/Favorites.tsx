@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { type Driver } from "../API/openF1";
-import "./Favorites.css"; // <-- On importe notre CSS ici
+import "./Favorites.css";
 
 export const Favorites = () => {
   const [favorites, setFavorites] = useState<Driver[]>([]);
