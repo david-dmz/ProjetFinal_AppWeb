@@ -1,5 +1,6 @@
 import { type Driver } from "../../API/openF1";
 import { DriverCard } from "./DriverCard";
+import "./DriverGrid.css";
 
 interface DriverGridProps {
   loading: boolean;

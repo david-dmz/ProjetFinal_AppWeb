@@ -1,0 +1,13 @@
+/* DriverGrid.css */
+
+.drivers-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 p-6 list-none;
+}
+
+.loading-container {
+  @apply flex justify-center items-center min-h-64;
+}
+
+.loading-spinner {
+  @apply w-14 h-14 border-4 border-gray-200 dark:border-gray-700 border-t-blue-500 rounded-full animate-spin;
+}

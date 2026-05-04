@@ -1,3 +1,5 @@
+import './DriverFilters.css'
+
 interface DriverFiltersProps {
   searchQuery: string;
   onSearchChange: (value: string) => void;

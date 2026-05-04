@@ -1,5 +1,6 @@
 import { type Driver } from "../../API/openF1";
 import { customImages } from "../../API/DriversInfo";
+import "./DriverCard.css";
 
 interface DriverCardProps {
   driver: Driver;
